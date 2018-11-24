@@ -7,6 +7,8 @@
     body {
         font-family: monospace;
         font-weight: bold;
+        background-color: #222;
+        color: white;
     }
     .centered {
         text-align: center;
@@ -17,6 +19,7 @@
     .playfield td {
         padding: 15px 20px;
         border: 2px solid red;
+        border-radius: 5px;
         background-color: black;
         color: white;
         font-size: 30px;
@@ -28,6 +31,13 @@
     }
     #reload {
         display: none;
+        cursor: pointer;
+        padding: 7px;
+        font: bold 17px monospace;
+        background-color: darkred;
+        color: white;       
+        border-radius: 5px;
+        border-color: black;        
     }
 </style>
 {% endblock %}
@@ -47,7 +57,7 @@
         {% endfor %}
     </table>
     
-    <div id="alert"></div>    
+    <p id="alert"></p>
     <button  type="button" id="reload">Noch mal</button>
 </div>
 {% endblock %}
@@ -81,8 +91,8 @@ $('.playfield td').click(function(){
                     }
                 }
             },
-            error: function(){
-                // TODO
+            error: function(request, status, error){
+                $('#alert').html('Es ist ein Fehler aufgetreten. Status: ' + status + ', Meldung: ' + error);
             }
         });
     }
