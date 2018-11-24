@@ -1,1 +1,1 @@
-"Beispielprojekt Vier Gewinnt mit serverseitiger Verarbeitung" 
+Beispielprojekt Vier Gewinnt mit serverseitiger Verarbeitung
