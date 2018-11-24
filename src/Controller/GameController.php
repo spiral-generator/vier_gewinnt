@@ -19,7 +19,8 @@ class GameController extends AbstractController
         $gewinnt = 4;
         
         $session->set('playfield', new Playfield($numCols, $numRows, $gewinnt));
-    
+        $session->set('currentPlayer', 1);
+        
         return $this->render('game/index.html.twig', [
             'maxCol'    => $numCols - 1,
             'maxRow'    => $numRows - 1,            
@@ -31,10 +32,24 @@ class GameController extends AbstractController
      * @Route("/processMove", name="processMove")
      */
     public function processMove(Request $request, SessionInterface $session){
-        $col = $request->request->get('col');
-        $row = $session->get('playfield')
-                       ->insertToken($col, 1); // TODO Spieler-Kennung statt 1
+        $playfield  = $session->get('playfield');  // TODO wirklich so?
+        $player     = $session->get('currentPlayer');
+        $col        = $request->request->get('col');
+        $row        = $playfield->insertToken($col, $player);
                        
-        return $this->json(['row' => $row]);
+        if($row >= 0){
+            $playerWins = $playfield->detectWin($col, $row, $player);
+        
+            $nextPlayer = 3 - $player;
+            $session->set('currentPlayer', $nextPlayer);
+        }
+        
+        unset($playfield);
+        
+        return $this->json([
+            'row'           => $row,
+            'player'        => $player,
+            'playerWins'    => $playerWins
+        ]);
     }
 }

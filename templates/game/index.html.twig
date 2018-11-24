@@ -26,6 +26,9 @@
         margin: 40px;
         font-size: 20px;
     }
+    #reload {
+        display: none;
+    }
 </style>
 {% endblock %}
 
@@ -44,35 +47,47 @@
         {% endfor %}
     </table>
     
-    <div id="alert"></div>
+    <div id="alert"></div>    
+    <button id="reload">Noch mal</button>
 </div>
 {% endblock %}
 
 {% block javascripts %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
-var signs = ['&nbsp;', 'X', 'O'];
+var signs       = ['&nbsp;', 'X', 'O'],
+    hasWinner   = false;
 
 $('.playfield td').click(function(){
-    var data = $(this).data();
-    
-    $.ajax({
-        url: '/processMove',
-        method: 'post',
-        dataType: 'json',
-        data: data,
-        success: function(response){
-            console.log(response.row);     // TODO
-            
-            if(response.row >= 0){
-                $('[data-col="' + data.col + '"][data-row="' + response.row + '"]')
-                    .html(signs[1]);     // TODO Spieler-Kennung statt 1
+    if(!hasWinner){
+        var data = $(this).data();
+        
+        $.ajax({
+            url: '/processMove',
+            method: 'post',
+            dataType: 'json',
+            data: data,
+            success: function(response){
+                if(response.row >= 0){
+                    $('[data-col="' + data.col + '"][data-row="' + response.row + '"]')
+                        .html(signs[response.player]);
+                        
+                    if(response.playerWins){
+                        hasWinner = true;
+                        $('#alert').html('Spieler ' + response.player + ' (' + signs[response.player] + ') gewinnt!');
+                        $('#reload').show();
+                    }
+                }
+            },
+            error: function(){
+                // TODO
             }
-        },
-        error: function(){
-            // TODO
-        }
-    });
+        });
+    }
+});
+
+$('#reload').click(function(){
+    location.reload(); 
 });
 </script>
 {% endblock %}
