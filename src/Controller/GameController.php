@@ -35,8 +35,9 @@ class GameController extends AbstractController
         $playfield  = $session->get('playfield');  // TODO wirklich so?
         $player     = $session->get('currentPlayer');
         $col        = $request->request->get('col');
-        $row        = $playfield->insertToken($col, $player);
-                       
+        $row        = $playfield->insertToken($col, $player);        
+        $playerWins = false;
+        
         if($row >= 0){
             $playerWins = $playfield->detectWin($col, $row, $player);
         
