@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{gewinnt}} Gewinnt{% endblock %}
+
+{% block styles %}
+    body {
+        font-family: monospace;
+        font-weight: bold;
+    }
+    .centered {
+        text-align: center;
+    }
+    .playfield {
+        margin: 0 auto; 
+    }
+    .playfield td {
+        padding: 15px 20px;
+        border: 2px solid red;
+        background-color: black;
+        color: white;
+        font-size: 30px;
+        cursor: default;
+    }
+    #alert {
+        margin: 40px;
+        font-size: 20px;
+    }
+{% endblock %}
+
+{% block body %}
+<div class="centered">
+    <h1>{{gewinnt}} Gewinnt</h1>
+    <table class="playfield">
+        {% for row in 0..maxRow %}
+            <tr>
+                {% for col in 0..maxCol %}
+                    <td data-col="{{col}}" data-row="{{row}}">
+                        &nbsp;
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}
