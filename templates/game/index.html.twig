@@ -48,14 +48,16 @@
     </table>
     
     <div id="alert"></div>    
-    <button id="reload">Noch mal</button>
+    <button  type="button" id="reload">Noch mal</button>
 </div>
 {% endblock %}
 
 {% block javascripts %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 <script>
-var signs       = ['&nbsp;', 'X', 'O'],
+var animSpeed   = 225,
+    signs       = ['&nbsp;', 'X', 'O'],
     hasWinner   = false;
 
 $('.playfield td').click(function(){
@@ -84,6 +86,17 @@ $('.playfield td').click(function(){
             }
         });
     }
+});
+
+$('.playfield td').on('mouseover mouseout', function(event){
+    var bgCol       = event.type == 'mouseover' ? 'red' : 'black',
+        borderCol   = event.type == 'mouseover' ? 'black' : 'red',
+        column      = $(this).data('col');
+    
+    $('[data-col="' + column + '"]').animate({
+        backgroundColor:    bgCol,
+        borderColor:        borderCol
+    }, animSpeed);
 });
 
 $('#reload').click(function(){
