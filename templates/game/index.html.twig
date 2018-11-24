@@ -3,6 +3,7 @@
 {% block title %}{{gewinnt}} Gewinnt{% endblock %}
 
 {% block styles %}
+<style>
     body {
         font-family: monospace;
         font-weight: bold;
@@ -25,6 +26,7 @@
         margin: 40px;
         font-size: 20px;
     }
+</style>
 {% endblock %}
 
 {% block body %}
@@ -41,5 +43,36 @@
             </tr>
         {% endfor %}
     </table>
+    
+    <div id="alert"></div>
 </div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+var signs = ['&nbsp;', 'X', 'O'];
+
+$('.playfield td').click(function(){
+    var data = $(this).data();
+    
+    $.ajax({
+        url: '/processMove',
+        method: 'post',
+        dataType: 'json',
+        data: data,
+        success: function(response){
+            console.log(response.row);     // TODO
+            
+            if(response.row >= 0){
+                $('[data-col="' + data.col + '"][data-row="' + response.row + '"]')
+                    .html(signs[1]);     // TODO Spieler-Kennung statt 1
+            }
+        },
+        error: function(){
+            // TODO
+        }
+    });
+});
+</script>
 {% endblock %}
