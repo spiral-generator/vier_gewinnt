@@ -55,10 +55,10 @@ class GameController extends AbstractController
             
             if($row == 0 && !$playerWins){
                 $isDraw = $playfield->detectDraw();
-            } else {        
-                $nextPlayer = 3 - $player;
-                $session->set('currentPlayer', $nextPlayer);
             }
+            
+            $nextPlayer = 3 - $player;
+            $session->set('currentPlayer', $nextPlayer);
         }
         
         unset($playfield);
