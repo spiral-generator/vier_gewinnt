@@ -14,13 +14,9 @@ class GameController extends AbstractController
      * @Route("/game", name="game")
      */
     public function index(SessionInterface $session){
-        /*$numCols = 7;
+        $numCols = 7;
         $numRows = 6;
-        $gewinnt = 4;*/
-        
-        $numCols = 4;
-        $numRows = 4;
-        $gewinnt = 5;
+        $gewinnt = 4;
         
         if($gewinnt > $numCols && $gewinnt > $numRows){
             $gewinnt = $numCols >= $numRows ?

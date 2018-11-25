@@ -95,6 +95,7 @@ $('.playfield td').click(function(){
                     if(response.playerWins || response.isDraw){
                         gameEnded = true;
                         $('#buttonWrapper').show();
+                        
                         $('#alert').html(
                               response.playerWins ?
                               'Spieler ' + response.player + ' (' + signs[response.player] + ') gewinnt!'

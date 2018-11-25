@@ -101,25 +101,23 @@ class Playfield {
     }
     
     public function generateReport(){        
-        $highest    = $this->maxRow;
-        $lowest     = 0;
-        $hasZeroCol = false;
+        $highestByCol = [];
         
-        foreach($this->field as $col){
-            foreach($col as $row => $value){
-                if($value){
-                    if($row < $highest){ $highest = $row; }                    
-                    if($row > $lowest){ $lowest = $row; }
-                }
-                elseif($row == $this->maxRow){
-                    $hasZeroCol = true;                    
+        foreach($this->field as $colIndex => $colValues){
+            foreach($colValues as $rowIndex => $cellValue){
+                if($cellValue){
+                    $highestByCol[$colIndex] = $this->maxRow - $rowIndex + 1;
+                    break;
                 }
             }
+            if(!isset($highestByCol[$colIndex])){
+                $highestByCol[$colIndex] = 0;
+            }
         }
-        
-        $highest    = $this->maxRow - $highest + 1;
-        $lowest     =   $hasZeroCol ? 0
-                      : $this->maxRow - $lowest + 1;
+                      
+        sort($highestByCol);
+        $highest = end($highestByCol);
+        $lowest = $highestByCol[0];
         
         return [
             'mode'      => $this->needToFind + 1,
