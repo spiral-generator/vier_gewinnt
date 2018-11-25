@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -45,9 +44,10 @@ class ReportController extends AbstractController
         }
         
         if($doLogin){
-            return $this->render('report/report.html.twig', [
-                'info' => $session->get('playfield')->generateReport()     // TODO
-            ]);
+            $info = $session->get('playfield')->generateReport();
+            $info['reloadUrl'] = $this->generateUrl('game');
+            
+            return $this->render('report/report.html.twig', $info);
         }
         
         return $this->render('report/login.html.twig', [

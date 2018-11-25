@@ -3,10 +3,63 @@
 {% block title %}Auswertung{% endblock %}
 
 {% block styles %}
-<!-- TODO vererben? -->
+<!-- TODO vererben? (Auch sonstiges CSS) -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<style>
+.centered {
+    text-align: center;
+}
+h1 {
+    font-size: 25px;
+    margin: 50px auto;
+}
+table {
+    width: 750px !important;
+    margin: 0 auto;
+}
+button {
+    cursor: pointer;
+    padding: 7px;
+    font: bold 17px monospace;
+    /*
+    background-color: darkred;
+    color: white;
+    */
+    border-radius: 5px;
+    border-color: black;
+    
+    margin-top: 30px;
+}
+</style>
 {% endblock %}
 
 {% block body %}
-    {{ dump(info) }}
+<div class="container">
+    <div class="centered">
+        <h1>Auswertung - {{mode}} Gewinnt</h1>
+        
+        <table class="table table-striped table-bordered table-hover">
+            <tr>
+                <td>Sieger</td>
+                <td>Spieler {{winner}}</td>
+            </tr>
+            <tr>
+                <td>Runden</td>
+                <td>{{turns}}</td>
+            </tr>
+            <tr>
+                <td>Höchste Spalte</td>
+                <td>{{highest}}</td>            
+            </tr>
+            <tr>
+                <td>Niedrigste Spalte</td>
+                <td>{{lowest}}</td>
+            </tr>
+        </table>
+        
+        <a href="{{reloadUrl}}">
+            <button type="button">Noch mal</button>
+        </a>
+    </div>
+</div>
 {% endblock %}

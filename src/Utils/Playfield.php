@@ -5,7 +5,10 @@ class Playfield {
     private $field,
             $maxCol,
             $maxRow,
-            $needToFind;
+            $needToFind,
+            
+            $winner,
+            $turns = 0;
             
     public function __construct($numCols, $numRows, $gewinnt){
         $this->maxCol       = $numCols - 1;
@@ -17,7 +20,7 @@ class Playfield {
         );
     }
     
-    public function insertToken($col, $currentPlayer){    
+    public function insertToken($col, $currentPlayer){
         for($row = $this->maxRow; $row >= 0; $row--){
             if($this->field[$col][$row] == 0){
                 break;
@@ -26,6 +29,10 @@ class Playfield {
         
         if($row >= 0){
             $this->field[$col][$row] = $currentPlayer;
+            
+            if($currentPlayer == 1){
+                $this->turns++;
+            }
         }
         
         return $row;
@@ -77,21 +84,40 @@ class Playfield {
             }            
         }
         
+        if($playerWins){
+            $this->winner = $player;
+        }
+        
         return $playerWins;
     }
     
-    // TODO
-    public function generateReport(){
-        $score = [1 => 0, 2 => 0];
-    
-        foreach($this->field as $col){  // TODO korrekt?
-            foreach($col as $cell){
-                if($cell){
-                    $score[$cell]++;
+    public function generateReport(){        
+        $highest    = $this->maxRow;
+        $lowest     = 0;
+        $hasZeroCol = false;
+        
+        foreach($this->field as $col){
+            foreach($col as $row => $value){
+                if($value){
+                    if($row < $highest){ $highest = $row; }                    
+                    if($row > $lowest){ $lowest = $row; }
+                }
+                elseif($row == $this->maxRow){
+                    $hasZeroCol = true;                    
                 }
             }
         }
         
-        return $score;
+        $highest    = $this->maxRow - $highest + 1;
+        $lowest     =   $hasZeroCol ? 0
+                      : $this->maxRow - $lowest + 1;
+        
+        return [
+            'mode'      => $this->needToFind + 1,
+            'winner'    => $this->winner,
+            'turns'     => $this->turns,
+            'highest'   => $highest,
+            'lowest'    => $lowest
+        ];
     }
 }
