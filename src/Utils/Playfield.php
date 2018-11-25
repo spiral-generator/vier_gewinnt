@@ -1,14 +1,7 @@
 <?php
 namespace App\Utils;
 
-class Playfield {
-    const WIN_TYPES = [
-        'down'                  => [[ 0,  1]         ],
-        'left_right'            => [[-1,  0], [1,  0]],
-        'topLeft_bottomRight'   => [[-1, -1], [1,  1]],
-        'bottomLeft_topRight'   => [[-1,  1], [1, -1]]
-    ];
-    
+class Playfield {    
     private $field,
             $maxCol,
             $maxRow,
@@ -65,15 +58,15 @@ class Playfield {
                     }
                 }
             }
-        }        
+        }
         
         $playerWins = false;
-        foreach(self::WIN_TYPES as $directions){
+        foreach([[0, 1], [1, 0], [1, 1], [1, -1]] as $directions){
             $numFound = 0;
             
-            foreach($directions as $dir){
-                $x = $dir[0];
-                $y = $dir[1];
+            foreach([1, -1] as $flip){
+                $x = $directions[0] * $flip;
+                $y = $directions[1] * $flip;
                 
                 $numFound += $sameFound[$x][$y];
             }
@@ -81,7 +74,7 @@ class Playfield {
             if($numFound >= $this->needToFind){
                 $playerWins = true;
                 break;
-            }
+            }            
         }
         
         return $playerWins;
