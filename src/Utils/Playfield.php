@@ -79,4 +79,19 @@ class Playfield {
         
         return $playerWins;
     }
+    
+    // TODO
+    public function generateReport(){
+        $score = [1 => 0, 2 => 0];
+    
+        foreach($this->field as $col){  // TODO korrekt?
+            foreach($col as $cell){
+                if($cell){
+                    $score[$cell]++;
+                }
+            }
+        }
+        
+        return $score;
+    }
 }

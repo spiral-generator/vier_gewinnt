@@ -24,7 +24,8 @@ class GameController extends AbstractController
         return $this->render('game/index.html.twig', [
             'maxCol'    => $numCols - 1,
             'maxRow'    => $numRows - 1,            
-            'gewinnt'   => $gewinnt
+            'gewinnt'   => $gewinnt,
+            'reportUrl' => $this->generateUrl('report')
         ]);
     }
     

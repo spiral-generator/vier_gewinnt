@@ -29,8 +29,10 @@
         margin: 40px;
         font-size: 20px;
     }
-    #reload {
+    #buttonWrapper {
         display: none;
+    }
+    #buttonWrapper button {
         cursor: pointer;
         padding: 7px;
         font: bold 17px monospace;
@@ -58,7 +60,13 @@
     </table>
     
     <p id="alert"></p>
-    <button  type="button" id="reload">Noch mal</button>
+    
+    <div id="buttonWrapper">
+        <button type="button" id="reload">Noch mal</button>
+        <a href="{{reportUrl}}">
+            <button type="button">Zur Auswertung</button>
+        </a>
+    </div>
 </div>
 {% endblock %}
 
@@ -87,7 +95,7 @@ $('.playfield td').click(function(){
                     if(response.playerWins){
                         hasWinner = true;
                         $('#alert').html('Spieler ' + response.player + ' (' + signs[response.player] + ') gewinnt!');
-                        $('#reload').show();
+                        $('#buttonWrapper').show();
                     }
                 }
             },
@@ -98,6 +106,7 @@ $('.playfield td').click(function(){
     }
 });
 
+// TODO https://forum.jquery.com/topic/stop-multiple-animations-on-hover-click#14737000005266320
 $('.playfield td').on('mouseover mouseout', function(event){
     var bgCol       = event.type == 'mouseover' ? 'red' : 'black',
         borderCol   = event.type == 'mouseover' ? 'black' : 'red',

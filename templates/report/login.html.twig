@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Auswertung{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<style>
+.wrapper {	
+	margin: 80px auto;
+}
+.form-signin {
+  max-width: 380px;
+  padding: 15px 35px 45px;
+  margin: 0 auto;
+  background-color: #fff;
+  border: 1px solid rgba(0,0,0,0.1);  
+}
+input,
+.form-check {
+    margin: 10px auto;
+}
+#message {
+    color: red;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="wrapper">
+    <form class="form-signin" method="post" action="{{checkLoginUrl}}">       
+        <h2 class="form-signin-heading">Bitte anmelden</h2>
+        {% if message is defined %}
+            <p id="message">{{message}}</p>
+        {% endif %}
+            
+        <input type="text" class="form-control" name="username" placeholder="Username" required autofocus
+            {% if username is defined %}
+                value="{{username}}"
+            {% endif %}
+        >
+        <input type="password" class="form-control" name="password" placeholder="Passwort" required
+            {% if password is defined %}
+                value="{{password}}"
+            {% endif %}        
+        >
+        
+        <!-- TODO -->
+        <!--div class="form-check">
+            <input type="checkbox" class="form-check-input" value="remember-me" id="rememberMe" name="rememberMe">
+            <label class="form-check-label">
+                Angemeldet bleiben
+            </label>
+        </div-->
+       
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Anmelden</button>   
+    </form>
+</div>
+{% endblock %}
