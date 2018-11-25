@@ -111,13 +111,12 @@ $('.playfield td').click(function(){
     }
 });
 
-// TODO https://forum.jquery.com/topic/stop-multiple-animations-on-hover-click#14737000005266320
 $('.playfield td').on('mouseover mouseout', function(event){
     var bgCol       = event.type == 'mouseover' ? 'red' : 'black',
         borderCol   = event.type == 'mouseover' ? 'black' : 'red',
-        column      = $(this).data('col');
+        selector    = '[data-col="' + $(this).data('col') + '"]';
     
-    $('[data-col="' + column + '"]').animate({
+    $(selector).stop().animate({
         backgroundColor:    bgCol,
         borderColor:        borderCol
     }, animSpeed);
