@@ -8,12 +8,12 @@ class Playfield {
             $needToFind,
             
             $winner = null,
-            $turns = 0;
+            $turns  = 0;
             
     public function __construct($numCols, $numRows, $gewinnt){
         $this->maxCol       = $numCols - 1;
         $this->maxRow       = $numRows - 1;
-        $this->needToFind   = $gewinnt - 1;     // TODO varname?
+        $this->needToFind   = $gewinnt - 1;
         
         $this->field = array_fill(0, $numCols,
             array_fill(0, $numRows, 0)
@@ -28,8 +28,7 @@ class Playfield {
         }
         
         if($row >= 0){
-            $this->field[$col][$row] = $currentPlayer;
-            
+            $this->field[$col][$row] = $currentPlayer;            
             if($currentPlayer == 1){
                 $this->turns++;
             }
@@ -67,28 +66,20 @@ class Playfield {
             }
         }
         
-        $playerWins = false;
         foreach([[0, 1], [1, 0], [1, 1], [1, -1]] as $directions){
-            $numFound = 0;
+            $x = $directions[0];
+            $y = $directions[1];
             
-            foreach([1, -1] as $flip){
-                $x = $directions[0] * $flip;
-                $y = $directions[1] * $flip;
-                
-                $numFound += $sameFound[$x][$y];
-            }
+            $numFound =   $sameFound[$x][$y]
+                        + $sameFound[-$x][-$y];
             
             if($numFound >= $this->needToFind){
-                $playerWins = true;
+                $this->winner = $player;
                 break;
             }            
         }
         
-        if($playerWins){
-            $this->winner = $player;
-        }
-        
-        return $playerWins;
+        return (bool)$this->winner;
     }
     
     public function detectDraw(){
@@ -104,20 +95,19 @@ class Playfield {
         $highestByCol = [];
         
         foreach($this->field as $colIndex => $colValues){
+            $highestByCol[$colIndex] = 0;
+            
             foreach($colValues as $rowIndex => $cellValue){
                 if($cellValue){
                     $highestByCol[$colIndex] = $this->maxRow - $rowIndex + 1;
                     break;
                 }
             }
-            if(!isset($highestByCol[$colIndex])){
-                $highestByCol[$colIndex] = 0;
-            }
         }
-                      
+        
         sort($highestByCol);
-        $highest = end($highestByCol);
-        $lowest = $highestByCol[0];
+        $highest    = end($highestByCol);
+        $lowest     = $highestByCol[0];
         
         return [
             'mode'      => $this->needToFind + 1,
