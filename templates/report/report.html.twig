@@ -20,11 +20,7 @@ table {
 button {
     cursor: pointer;
     padding: 7px;
-    font: bold 17px monospace;
-    /*
-    background-color: darkred;
-    color: white;
-    */
+    font: bold 17px monospace;  
     border-radius: 5px;
     border-color: black;
     
@@ -41,7 +37,13 @@ button {
         <table class="table table-striped table-bordered table-hover">
             <tr>
                 <td>Sieger</td>
-                <td>Spieler {{winner}}</td>
+                <td>
+                    {% if winner %}
+                        Spieler {{winner}}
+                    {% else %}
+                        unentschieden
+                    {% endif %}
+                </td>
             </tr>
             <tr>
                 <td>Runden</td>

@@ -7,7 +7,7 @@ class Playfield {
             $maxRow,
             $needToFind,
             
-            $winner,
+            $winner = null,
             $turns = 0;
             
     public function __construct($numCols, $numRows, $gewinnt){
@@ -89,6 +89,15 @@ class Playfield {
         }
         
         return $playerWins;
+    }
+    
+    public function detectDraw(){
+        $filledCols = 0;        
+        foreach($this->field as $col){
+            $filledCols += $col[0] > 0;
+        }
+        
+        return $filledCols == $this->maxCol + 1;
     }
     
     public function generateReport(){        

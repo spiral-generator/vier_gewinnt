@@ -76,10 +76,10 @@
 <script>
 var animSpeed   = 225,
     signs       = ['&nbsp;', 'X', 'O'],
-    hasWinner   = false;
+    gameEnded   = false;
 
 $('.playfield td').click(function(){
-    if(!hasWinner){
+    if(!gameEnded){
         var data = $(this).data();
         
         $.ajax({
@@ -92,11 +92,18 @@ $('.playfield td').click(function(){
                     $('[data-col="' + data.col + '"][data-row="' + response.row + '"]')
                         .html(signs[response.player]);
                         
-                    if(response.playerWins){
-                        hasWinner = true;
-                        $('#alert').html('Spieler ' + response.player + ' (' + signs[response.player] + ') gewinnt!');
+                    if(response.playerWins || response.isDraw){
+                        gameEnded = true;
                         $('#buttonWrapper').show();
+                        $('#alert').html(
+                              response.playerWins ?
+                              'Spieler ' + response.player + ' (' + signs[response.player] + ') gewinnt!'
+                            : 'Das Spiel endet unentschieden!'
+                        );
                     }
+                    /*if(response.playerWins){
+                        $('#alert').html('Spieler ' + response.player + ' (' + signs[response.player] + ') gewinnt!');
+                    }*/
                 }
             },
             error: function(request, status, error){

@@ -14,9 +14,18 @@ class GameController extends AbstractController
      * @Route("/game", name="game")
      */
     public function index(SessionInterface $session){
-        $numCols = 7;
+        /*$numCols = 7;
         $numRows = 6;
-        $gewinnt = 4;
+        $gewinnt = 4;*/
+        
+        $numCols = 4;
+        $numRows = 4;
+        $gewinnt = 5;
+        
+        if($gewinnt > $numCols && $gewinnt > $numRows){
+            $gewinnt = $numCols >= $numRows ?
+                $numCols : $numRows;
+        }
         
         $session->set('playfield', new Playfield($numCols, $numRows, $gewinnt));
         $session->set('currentPlayer', 1);
@@ -36,15 +45,20 @@ class GameController extends AbstractController
         $playfield  = $session->get('playfield');  // TODO wirklich so?
         $player     = $session->get('currentPlayer');
         $playerWins = false;
+        $isDraw     = false;
         
         $col        = $request->request->get('col');
         $row        = $playfield->insertToken($col, $player);        
         
         if($row >= 0){
             $playerWins = $playfield->detectWin($col, $row, $player);
-        
-            $nextPlayer = 3 - $player;
-            $session->set('currentPlayer', $nextPlayer);
+            
+            if($row == 0 && !$playerWins){
+                $isDraw = $playfield->detectDraw();
+            } else {        
+                $nextPlayer = 3 - $player;
+                $session->set('currentPlayer', $nextPlayer);
+            }
         }
         
         unset($playfield);
@@ -52,7 +66,8 @@ class GameController extends AbstractController
         return $this->json([
             'row'           => $row,
             'player'        => $player,
-            'playerWins'    => $playerWins
+            'playerWins'    => $playerWins,
+            'isDraw'        => $isDraw
         ]);
     }
 }
