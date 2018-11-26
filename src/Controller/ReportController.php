@@ -6,9 +6,16 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
+/**
+ * Controller für die Auswertungsseite inkl. Login
+ */
 class ReportController extends AbstractController
 {
     /**
+     * Anzeigen der Login-Seite
+     *
+     * @return Response Das gerenderte Template
+     *
      * @Route("/report", name="report")
      */
     public function index(){
@@ -18,6 +25,13 @@ class ReportController extends AbstractController
     }
     
     /**
+     * Auswertung der Login-Daten. Bei Erfolg Anzeigen der Auswertungsseite, ansonsten zurück zum Login
+     *
+     * @param Request           $request    Enthält die Login-Daten
+     * @param SessionInterface  $session    Die Spieldaten werden in der Session vorgehalten
+     *
+     * @return Response     Das gerenderte Template (Auswertungsseite oder Login)
+     *
      * @Route("/checkLogin", name="checkLogin")
      */
     public function checkLogin(Request $request, SessionInterface $session){        
@@ -44,12 +58,9 @@ class ReportController extends AbstractController
         }
         
         if($doLogin){
-            $info       = $session->get('playfield')->generateReport();
-            $reloadUrl  = $this->generateUrl('game');
-            
             return $this->render('report/report.html.twig', [
-                'info'      => $info,
-                'reloadUrl' => $reloadUrl
+                'info'      => $session->get('playfield')->generateReport(),
+                'reloadUrl' => $this->generateUrl('game')
             ]);
         }
         

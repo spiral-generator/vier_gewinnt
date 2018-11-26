@@ -4,12 +4,18 @@ namespace App\Tests\Utils;
 use App\Utils\Playfield;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Unit Tests für die Playfield-Klasse
+ */
 class PlayfieldTest extends TestCase {
     private $testPlayer     = 1,
             $otherPlayer    = 2,
             
-            $randomSeed     = 1;
+            $randomSeed     = 1;        // seed für mt_rand() - auf diese Weise erhalten wir immer dieselben "Zufalls"-Zahlen
   
+    /**
+     * Test der Funktion zum Einsetzen eines neuen Spielsteins
+     */
     public function testInsertToken(){
         mt_srand($this->randomSeed);
         
@@ -31,6 +37,13 @@ class PlayfieldTest extends TestCase {
         }
     }
     
+    /**
+     * Test, ob eine Kette in Oben-Unten-Richtung erkannt wird (wird von testDetectWin() aufgerufen)
+     *
+     * @param int   $numCols    Anzahl Spalten des zu testenden Spielfeldes
+     * @param int   $numRows    Anzahl Reihen des zu testenden Spielfeldes
+     * @param int   $gewinnt    Länge der zum Sieg benötigten Kette
+     */
     private function detectWinUpDown($numCols, $numRows, $gewinnt){
         $playfield  = new Playfield($numCols, $numRows, $gewinnt);
         
@@ -43,6 +56,14 @@ class PlayfieldTest extends TestCase {
         );
     }
     
+    /**
+     * Test, ob eine Kette in Diagonalrichtung erkannt wird (wird von testDetectWin() aufgerufen)
+     *
+     * @param int   $numCols    Anzahl Spalten des zu testenden Spielfeldes
+     * @param int   $numRows    Anzahl Reihen des zu testenden Spielfeldes
+     * @param int   $gewinnt    Länge der zum Sieg benötigten Kette
+     * @param int   $direction  Positiv: links unten nach rechts oben, negativ: links oben nach rechts unten
+     */
     private function detectWinDiagonally($numCols, $numRows, $gewinnt, $direction){
         if($direction == 0){
             return false;
@@ -69,6 +90,13 @@ class PlayfieldTest extends TestCase {
         );        
     }
     
+    /**
+     * Test, ob eine Kette in Links-Rechts-Richtung erkannt wird (wird von testDetectWin() aufgerufen)
+     *
+     * @param int   $numCols    Anzahl Spalten des zu testenden Spielfeldes
+     * @param int   $numRows    Anzahl Reihen des zu testenden Spielfeldes
+     * @param int   $gewinnt    Länge der zum Sieg benötigten Kette
+     */    
     private function detectWinLeftRight($numCols, $numRows, $gewinnt){
         $playfield = new Playfield($numCols, $numRows, $gewinnt);
         for($column = 0; $column < $gewinnt; $column++){
@@ -81,6 +109,9 @@ class PlayfieldTest extends TestCase {
         );         
     }
     
+    /**
+     * Test der Funktion zum Erkennen, ob eine Kette von Spielsteinen mit der zum Sieg notwendigen Länge gebildet wurde
+     */
     public function testDetectWin(){
         mt_srand($this->randomSeed);
 
@@ -97,6 +128,9 @@ class PlayfieldTest extends TestCase {
         }
     }
     
+    /**
+     * Test, dass eine Kette von nicht ausreichender Länge nicht fälschlich als ausreichend erkannt wird
+     */
     public function testNotDetectWin_TooFewTokens(){
         $playfield = new Playfield(7, 6, 4);
         
@@ -110,6 +144,9 @@ class PlayfieldTest extends TestCase {
         );
     }
     
+    /**
+     * Test, dass eine Kette von ausreichender Länge, die aber aus Spielsteinen des Gegners besteht, nicht fälschlich als Sieg erkannt wird
+     */
     public function testNotDetectWin_WrongPlayer(){
         $numCols = 7;
         $numRows = 6;
@@ -128,6 +165,9 @@ class PlayfieldTest extends TestCase {
         }
     }
     
+    /**
+     * Test, ob ein Unentschieden korrekt erkannt wird
+     */
     public function testDetectDraw(){
         mt_srand($this->randomSeed);
         
@@ -139,7 +179,7 @@ class PlayfieldTest extends TestCase {
             $playfield  = new Playfield($numCols, $numRows, $gewinnt);
             
             for($row = $numRows - 1; $row >= 0; $row--){
-                if(($row - 1) % ($gewinnt - 1) == 0){
+                if(($row - 1) % ($gewinnt - 1) == 0){       // Reihen immer gleich befüllen, bis eins weniger als benötigt erreicht ist, dann andersrum befüllen
                     $players = array_reverse($players);
                 }
                     
@@ -152,6 +192,9 @@ class PlayfieldTest extends TestCase {
         }
     }
     
+    /**
+     * Test, ob korrekt erkannt wird, dass bisher kein Unentschieden vorliegt
+     */    
     public function testNotDetectDraw(){
         $playfield = new Playfield(7, 6, 4);
         

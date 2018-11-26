@@ -87,7 +87,7 @@ $('.playfield td').click(function(){
         var data = $(this).data();
         
         $.ajax({
-            url: '/processMove',
+            url: '{{processUrl}}',
             method: 'post',
             dataType: 'json',
             data: data,

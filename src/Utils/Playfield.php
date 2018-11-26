@@ -1,6 +1,9 @@
 <?php
 namespace App\Utils;
 
+/**
+ * Enthält die Spiellogik
+ */
 class Playfield {    
     private $field,
             $maxCol,
@@ -9,17 +12,31 @@ class Playfield {
             
             $winner = null,
             $turns  = 0;
-            
+    
+    /**
+     * @param int   $numCols    Anzahl Spalten für das Spielfeld
+     * @param int   $numRows    Anzahl Reihen für das Spielfeld
+     * @param int   $gewinnt    Länge der zum Sieg benötigten Kette
+     */
     public function __construct($numCols, $numRows, $gewinnt){
         $this->maxCol       = $numCols - 1;
         $this->maxRow       = $numRows - 1;
-        $this->needToFind   = $gewinnt - 1;
+        $this->needToFind   = $gewinnt - 1;     // von einem neu gesetzten Spielstein ausgehend müssen soviel weitere gefunden werden (z.B. 3 bei 4 gewinnt)
         
+        // Spielfeld mit 0 initialisieren ( = kein Stein gesetzt)
         $this->field = array_fill(0, $numCols,
             array_fill(0, $numRows, 0)
         );
     }
     
+    /**
+     * Neuen Spielstein einsetzen (richtige Reihe anhand der übergebenen Spalte ermitteln) sowie Runden zählen
+     *
+     * @param int   $col            Die Spalte, in die ein neuer Spielstein "eingeworfen" wurde
+     * @param int   $currentPlayer  Die Nummer des Spielers, dessen Spielstein "eingeworfen" wurde
+     *
+     * @return int  Die ermittelte Reihe für den eingeworfenen Spielstein (-1 = Es ist kein Platz mehr in dieser Spalte)
+     */
     public function insertToken($col, $currentPlayer){
         for($row = $this->maxRow; $row >= 0; $row--){
             if($this->field[$col][$row] == 0){
@@ -37,6 +54,15 @@ class Playfield {
         return $row;
     }
     
+    /**
+     * Ermitteln, ob der zuletzt eingeworfene Spielstein zum Sieg für den jeweiligen Spieler führt
+     *
+     * @param int   $col    Die Spalte des eingeworfenen Spielsteins
+     * @param int   $row    Die Reihe des eingeworfenen Spielsteins
+     * @param int   $player Die Nummer des Spielers, dessen Spielstein "eingeworfen" wurde
+     *
+     * @return bool Wurde eine ausreichend lange Kette von Steinen gefunden?
+     */
     public function detectWin($col, $row, $player){
         if($this->field[$col][$row] !== $player){
             return false;
@@ -46,10 +72,11 @@ class Playfield {
         $sameFound  = array_fill(-1, 3, array_fill(-1, 3, 0));
         $playerWins = false;
         
+        // Ausgehend von der Position des neuen Steins in sieben Richtungen (s.u.) nach ausreichend langen Ketten suchen
         for($cellDistance = 1; $cellDistance <= $this->needToFind; $cellDistance++){
             foreach([-$cellDistance, 0, $cellDistance] as $checkRow){
                 foreach([-$cellDistance, 0, $cellDistance] as $checkCol){
-                    if($checkCol || $checkRow){
+                    if($checkCol || $checkRow > 0){     // 0,0 braucht nicht berücksichtigt zu werden, "nach oben" muss ebenfalls nicht gesucht werden 
                         $xDir = $checkCol <=> 0;
                         $yDir = $checkRow <=> 0;
                         
@@ -61,9 +88,9 @@ class Playfield {
                                 || $row + $checkRow > $this->maxRow
                                 || $this->field[$col + $checkCol][$row + $checkRow] !== $player
                             ){
-                                $endReached[$xDir][$yDir] = true;
+                                $endReached[$xDir][$yDir] = true;       // Spielfeldrand bzw. leeres oder gegnerisches Feld in dieser Richtung gefunden
                             } else {
-                                $sameFound[$xDir][$yDir]++;
+                                $sameFound[$xDir][$yDir]++;             // Eigener Spielstein in dieser Richtung gefunden
                             }                        
                         }
                     }
@@ -71,6 +98,7 @@ class Playfield {
             }
         }
         
+        // Anzahl gefundener eigener Steine aus entgegengesetzten Richtungen addieren (z.B. links oben und rechts unten)
         foreach([[0, 1], [1, 0], [1, 1], [1, -1]] as $directions){
             $x = $directions[0];
             $y = $directions[1];
@@ -88,15 +116,25 @@ class Playfield {
         return $playerWins;
     }
     
+    /**
+     * Ermitteln, ob ein Unentschieden vorliegt (d.h. alle Felder sind befüllt, ohne dass sich eine ausreichend lange Kette ergibt)
+     *
+     * @return bool Liegt ein Unentschieden vor?
+     */
     public function detectDraw(){
         $filledCols = 0;        
         foreach($this->field as $col){
-            $filledCols += $col[0] > 0;
+            $filledCols += $col[0] > 0;     // Es muss jeweils nur das oberste Feld der jeweiligen Spalte berücksichtigt werden
         }
         
         return $filledCols == $this->maxCol + 1;
     }
     
+    /**
+     * Erstellen der Auswertung, inkl. Anzahl Runden sowie Höhe der am höchsten und am niedrigsten befüllten Spalte
+     *
+     * @return array[int] Die Auswertungsdaten
+     */
     public function generateReport(){        
         $highestByCol = [];
         
