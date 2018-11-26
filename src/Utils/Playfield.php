@@ -38,8 +38,13 @@ class Playfield {
     }
     
     public function detectWin($col, $row, $player){
+        if($this->field[$col][$row] !== $player){
+            return false;
+        }
+    
         $endReached = array_fill(-1, 3, array_fill(-1, 3, false));
         $sameFound  = array_fill(-1, 3, array_fill(-1, 3, 0));
+        $playerWins = false;
         
         for($cellDistance = 1; $cellDistance <= $this->needToFind; $cellDistance++){
             foreach([-$cellDistance, 0, $cellDistance] as $checkRow){
@@ -54,7 +59,7 @@ class Playfield {
                                 || $col + $checkCol > $this->maxCol
                                 || $row + $checkRow < 0
                                 || $row + $checkRow > $this->maxRow
-                                || $this->field[$col + $checkCol][$row + $checkRow] !== $this->field[$col][$row]
+                                || $this->field[$col + $checkCol][$row + $checkRow] !== $player
                             ){
                                 $endReached[$xDir][$yDir] = true;
                             } else {
@@ -74,12 +79,13 @@ class Playfield {
                         + $sameFound[-$x][-$y];
             
             if($numFound >= $this->needToFind){
+                $playerWins = true;
                 $this->winner = $player;
                 break;
             }            
         }
         
-        return (bool)$this->winner;
+        return $playerWins;
     }
     
     public function detectDraw(){
