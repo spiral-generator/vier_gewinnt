@@ -77,6 +77,10 @@
 var animSpeed   = 225,
     signs       = ['&nbsp;', 'X', 'O'],
     gameEnded   = false;
+    
+$(function(){
+    $('#alert').html('Spieler 1 (' + signs[1] + ') ist dran');
+});    
 
 $('.playfield td').click(function(){
     if(!gameEnded){
@@ -101,6 +105,9 @@ $('.playfield td').click(function(){
                               'Spieler ' + response.player + ' (' + signs[response.player] + ') gewinnt!'
                             : 'Das Spiel endet unentschieden!'
                         );
+                    } else {
+                        var currentPlayer = 3 - response.player;
+                        $('#alert').html('Spieler ' + currentPlayer + ' (' + signs[currentPlayer] + ') ist dran');
                     }
                 }
             },
