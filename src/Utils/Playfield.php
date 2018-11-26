@@ -74,19 +74,22 @@ class Playfield {
         
         // Ausgehend von der Position des neuen Steins in sieben Richtungen (s.u.) nach ausreichend langen Ketten suchen
         for($cellDistance = 1; $cellDistance <= $this->needToFind; $cellDistance++){
-            foreach([-$cellDistance, 0, $cellDistance] as $checkRow){
-                foreach([-$cellDistance, 0, $cellDistance] as $checkCol){
-                    if($checkCol || $checkRow > 0){     // 0,0 braucht nicht berücksichtigt zu werden, "nach oben" muss ebenfalls nicht gesucht werden 
-                        $xDir = $checkCol <=> 0;
-                        $yDir = $checkRow <=> 0;
+            foreach([-$cellDistance, 0, $cellDistance] as $rowOffset){
+                foreach([-$cellDistance, 0, $cellDistance] as $colOffset){
+                    if($colOffset || $rowOffset > 0){     // 0,0 braucht nicht berücksichtigt zu werden, "nach oben" muss ebenfalls nicht gesucht werden 
+                        $xDir = $colOffset <=> 0;
+                        $yDir = $rowOffset <=> 0;
                         
                         if(!$endReached[$xDir][$yDir]){
+                            $checkCol = $col + $colOffset;
+                            $checkRow = $row + $rowOffset;
+                        
                             if(
-                                   $col + $checkCol < 0
-                                || $col + $checkCol > $this->maxCol
-                                || $row + $checkRow < 0
-                                || $row + $checkRow > $this->maxRow
-                                || $this->field[$col + $checkCol][$row + $checkRow] !== $player
+                                   $checkCol < 0
+                                || $checkCol > $this->maxCol
+                                || $checkRow < 0
+                                || $checkRow > $this->maxRow
+                                || $this->field[$checkCol][$checkRow] !== $player
                             ){
                                 $endReached[$xDir][$yDir] = true;       // Spielfeldrand bzw. leeres oder gegnerisches Feld in dieser Richtung gefunden
                             } else {
