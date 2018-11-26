@@ -105,4 +105,28 @@ class PlayfieldTest extends TestCase {
             }
         }
     }
+    
+    public function testDetectDraw(){
+        mt_srand($this->randomSeed);
+        
+        for($run = 0; $run <= 9; $run++){
+            $numRows    = mt_rand(2, 12);
+            $numCols    = mt_rand($numRows, 12);
+            $gewinnt    = mt_rand(2, $numCols - 1);
+            $players    = [$this->testPlayer, $this->otherPlayer];
+            $playfield  = new Playfield($numCols, $numRows, $gewinnt);
+            
+            for($row = $numRows - 1; $row >= 0; $row--){
+                if(($row - 1) % ($gewinnt - 1) == 0){
+                    $players = array_reverse($players);
+                }
+                    
+                for($col = 0; $col < $numCols; $col++){
+                    $playfield->insertToken($col, $players[$col % 2]);
+                }                
+            }
+            
+            $this->assertTrue($playfield->detectDraw());
+        }
+    }
 }
