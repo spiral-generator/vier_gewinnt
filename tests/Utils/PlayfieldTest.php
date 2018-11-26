@@ -41,9 +41,6 @@ class PlayfieldTest extends TestCase {
         $this->assertTrue(
             $playfield->detectWin(0, $lastRow, $this->testPlayer)
         );
-        $this->assertFalse(
-            $playfield->detectWin(0, $lastRow, $this->otherPlayer)
-        );
     }
     
     private function detectWinDiagonally($numCols, $numRows, $gewinnt, $direction){
@@ -70,9 +67,6 @@ class PlayfieldTest extends TestCase {
         $this->assertTrue(
             $playfield->detectWin($lastColumn, $lastRow, $this->testPlayer)
         );        
-        $this->assertFalse(
-            $playfield->detectWin($lastColumn, $lastRow, $this->otherPlayer)
-        );    
     }
     
     private function detectWinLeftRight($numCols, $numRows, $gewinnt){
@@ -84,10 +78,7 @@ class PlayfieldTest extends TestCase {
         
         $this->assertTrue(
             $playfield->detectWin($lastColumn, $lastRow, $this->testPlayer)
-        );       
-        $this->assertFalse(
-            $playfield->detectWin($lastColumn, $lastRow, $this->otherPlayer)
-        );    
+        );         
     }
     
     public function testDetectWin(){
@@ -103,6 +94,37 @@ class PlayfieldTest extends TestCase {
                 $this->detectWinDiagonally($numCols, $numRows, $gewinnt, -1);
                 $this->detectWinDiagonally($numCols, $numRows, $gewinnt, 1);
             }
+        }
+    }
+    
+    public function testNotDetectWin_TooFewTokens(){
+        $playfield = new Playfield(7, 6, 4);
+        
+        foreach([2, 5, 2, 4, 5, 6, 6, 6] as $col){
+            $lastCol = $col;
+            $lastRow = $playfield->insertToken($col, $this->testPlayer);            
+        }
+        
+        $this->assertFalse(
+            $playfield->detectWin($lastCol, $lastRow, $this->testPlayer)
+        );
+    }
+    
+    public function testNotDetectWin_WrongPlayer(){
+        $numCols = 7;
+        $numRows = 6;
+        
+        for($gewinnt = 2; $gewinnt <= $numRows - 1; $gewinnt++){  
+            $playfield = new Playfield($numCols, $numRows, $gewinnt);
+            
+            for($column = 0; $column < $gewinnt; $column++){
+                $lastRow = $playfield->insertToken($column, $this->testPlayer);
+                $lastColumn = $column;
+            }
+            
+            $this->assertFalse(
+                $playfield->detectWin($lastColumn, $lastRow, $this->otherPlayer)
+            );
         }
     }
     
@@ -129,4 +151,14 @@ class PlayfieldTest extends TestCase {
             $this->assertTrue($playfield->detectDraw());
         }
     }
+    
+    public function testNotDetectDraw(){
+        $playfield = new Playfield(7, 6, 4);
+        
+        foreach([2, 5, 2, 4, 5, 6, 6, 6] as $col){
+            $playfield->insertToken($col, $this->testPlayer);
+        }
+        
+        $this->assertFalse($playfield->detectDraw());
+    }    
 }
