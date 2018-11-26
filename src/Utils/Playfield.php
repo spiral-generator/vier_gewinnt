@@ -117,6 +117,8 @@ class Playfield {
         
         return [
             'mode'      => $this->needToFind + 1,
+            'cols'      => $this->maxCol + 1,
+            'rows'      => $this->maxRow + 1,
             'winner'    => $this->winner,
             'turns'     => $this->turns,
             'highest'   => $highest,

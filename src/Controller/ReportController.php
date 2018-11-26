@@ -44,10 +44,13 @@ class ReportController extends AbstractController
         }
         
         if($doLogin){
-            $info = $session->get('playfield')->generateReport();
-            $info['reloadUrl'] = $this->generateUrl('game');        // TODO lieber in eigene var, dann View umbauen
+            $info       = $session->get('playfield')->generateReport();
+            $reloadUrl  = $this->generateUrl('game');
             
-            return $this->render('report/report.html.twig', $info);
+            return $this->render('report/report.html.twig', [
+                'info'      => $info,
+                'reloadUrl' => $reloadUrl
+            ]);
         }
         
         return $this->render('report/login.html.twig', [

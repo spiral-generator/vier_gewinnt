@@ -8,7 +8,7 @@ class PlayfieldTest extends TestCase {
     private $testPlayer     = 1,
             $otherPlayer    = 2,
             
-            $randomSeed     = 3;
+            $randomSeed     = 1;
   
     public function testInsertToken(){
         mt_srand($this->randomSeed);

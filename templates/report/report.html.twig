@@ -32,30 +32,38 @@ button {
 {% block body %}
 <div class="container">
     <div class="centered">
-        <h1>Auswertung - {{mode}} Gewinnt</h1>
+        <h1>Auswertung - {{info.mode}} Gewinnt</h1>
         
         <table class="table table-striped table-bordered">
             <tr>
                 <td>Sieger</td>
                 <td>
-                    {% if winner %}
-                        Spieler {{winner}}
+                    {% if info.winner %}
+                        Spieler {{info.winner}}
                     {% else %}
                         unentschieden
                     {% endif %}
                 </td>
             </tr>
             <tr>
+                <td># Gewinnt</td>
+                <td>{{info.mode}}</td>
+            </tr>
+            <tr>
+                <td>Spielfeldgröße</td>
+                <td>{{info.cols}} x {{info.rows}}</td>
+            </tr>
+            <tr>
                 <td>Runden</td>
-                <td>{{turns}}</td>
+                <td>{{info.turns}}</td>
             </tr>
             <tr>
                 <td>Höchste Spalte</td>
-                <td>{{highest}}</td>            
+                <td>{{info.highest}}</td>            
             </tr>
             <tr>
                 <td>Niedrigste Spalte</td>
-                <td>{{lowest}}</td>
+                <td>{{info.lowest}}</td>
             </tr>
         </table>
         
