@@ -76,14 +76,11 @@ class Playfield {
         for($cellDistance = 1; $cellDistance <= $this->needToFind; $cellDistance++){
             for($yDir = -1; $yDir <= 1; $yDir++){
                 for($xDir = -1; $xDir <= 1; $xDir++){
-                    $colOffset = $xDir * $cellDistance;
-                    $rowOffset = $yDir * $cellDistance;
-                    
-                    if(    !$endReached[$xDir][$yDir]
-                        && ($colOffset || $rowOffset > 0)     // 0,0 braucht nicht berücksichtigt zu werden, "nach oben" muss ebenfalls nicht gesucht werden 
-                    ){     
-                        $checkCol = $col + $colOffset;
-                        $checkRow = $row + $rowOffset;
+                    if(    ($xDir || $yDir > 0)         // 0,0 braucht nicht berücksichtigt zu werden, "nach oben" muss ebenfalls nicht gesucht werden 
+                        && !$endReached[$xDir][$yDir]
+                    ){
+                        $checkCol = $col + $xDir * $cellDistance;
+                        $checkRow = $row + $yDir * $cellDistance;
                     
                         if(
                                $checkCol < 0
