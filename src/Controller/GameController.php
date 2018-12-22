@@ -30,8 +30,7 @@ class GameController extends AbstractController
         
         // $gewinnt darf maximal der Breite oder Höhe des Spielfeldes entsprechen, sonst kann das Spiel nicht gewonnen werden
         if($gewinnt > $numCols && $gewinnt > $numRows){
-            $gewinnt = $numCols >= $numRows ?
-                $numCols : $numRows;
+            $gewinnt = max($numCols, $numRows);
         }
         
         $session->set('playfield', new Playfield($numCols, $numRows, $gewinnt));
@@ -69,6 +68,7 @@ class GameController extends AbstractController
             $playerWins = $playfield->detectWin($col, $row, $player);
             
             // Unentschieden entsteht nur, wenn alle Felder voll sind (row 0 = oberste Zeile)
+            // TODO stimmt nicht ganz... (Unentschieden kann u.U. schon früher festgestellt werden)
             if($row == 0 && !$playerWins){
                 $isDraw = $playfield->detectDraw();
             }

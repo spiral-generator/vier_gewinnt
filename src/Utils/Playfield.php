@@ -38,6 +38,8 @@ class Playfield {
      * @return int  Die ermittelte Reihe für den eingeworfenen Spielstein (-1 = Es ist kein Platz mehr in dieser Spalte)
      */
     public function insertToken($col, $currentPlayer){
+        // TODO diese Schleife könnte eingespart werden, wenn in einem Session-Array die aktuelle Höhe jeder Spalte hinterlegt wäre, bräuchte dann nur hochgezählt zu werden
+        // würde auch die Auswertung betreffen!!
         for($row = $this->maxRow; $row >= 0; $row--){
             if($this->field[$col][$row] == 0){
                 break;
@@ -75,15 +77,15 @@ class Playfield {
         // Ausgehend von der Position des neuen Steins in sieben Richtungen (s.u.) nach ausreichend langen Ketten suchen
         for($cellDistance = 1; $cellDistance <= $this->needToFind; $cellDistance++){
             for($yDir = -1; $yDir <= 1; $yDir++){
-                for($xDir = -1; $xDir <= 1; $xDir++){
-                    if(    ($xDir || $yDir > 0)         // 0,0 braucht nicht berücksichtigt zu werden, "nach oben" muss ebenfalls nicht gesucht werden 
-                        && !$endReached[$xDir][$yDir]
-                    ){
+                $checkRow = $row + $yDir * $cellDistance;
+                
+                for($xDir = -1; $xDir <= 1; $xDir++){                                        
+                    if(    !$endReached[$xDir][$yDir]
+                        && ($xDir || $yDir == 1)         // 0,0 braucht nicht berücksichtigt zu werden, "nach oben" muss ebenfalls nicht gesucht werden 
+                    ){                    
                         $checkCol = $col + $xDir * $cellDistance;
-                        $checkRow = $row + $yDir * $cellDistance;
-                    
-                        if(
-                               $checkCol < 0
+                        
+                        if(    $checkCol < 0
                             || $checkCol > $this->maxCol
                             || $checkRow < 0
                             || $checkRow > $this->maxRow

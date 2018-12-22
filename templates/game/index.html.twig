@@ -84,7 +84,7 @@ $(function(){
 
 $('.playfield td').click(function(){
     if(!gameEnded){
-        var data = $(this).data();
+        var data = $(this).data();      // TODO die row zu übertragen ist unnötig, col genügt
         
         $.ajax({
             url: '{{processUrl}}',
